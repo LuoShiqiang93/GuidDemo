@@ -8,19 +8,24 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GuideActivity extends AppCompatActivity implements OnPageChangeListener{
+public class GuideActivity extends AppCompatActivity implements OnPageChangeListener,OnTouchListener{
     private static final String TAG = "GuideActivity";
     private List<View> guideList;
     private ViewPager mViewPager;
     private GuidePagerAdapter pagerAdapter;
     private LinearLayout mLinearLayout;
+
+    private int currentItem;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,9 +69,10 @@ public class GuideActivity extends AppCompatActivity implements OnPageChangeList
         }
 
         mViewPager.addOnPageChangeListener(this);
+        mViewPager.setOnTouchListener(this);
     }
 
-    public void GoMainActivity(View view) {
+    public void GoMainActivity() {
         SharedPreferences sharedPreferences=getSharedPreferences("test",MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("guide",false);
@@ -74,16 +80,18 @@ public class GuideActivity extends AppCompatActivity implements OnPageChangeList
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
         finish();
+        overridePendingTransition(R.anim.slide_in_right,R.anim.slide_in_left);
     }
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
     }
-private int tag=0;
+
     @Override
     public void onPageSelected(int position) {
-        tag=position;
+
+        currentItem=position;
         int childCount = mLinearLayout.getChildCount();
         for (int i = 0; i < childCount; i++) {
             ImageView imageView= (ImageView) mLinearLayout.getChildAt(i);
@@ -94,21 +102,29 @@ private int tag=0;
             }
         }
     }
-private boolean aBoolean=false;
+
     @Override
     public void onPageScrollStateChanged(int state) {
-        Log.e(TAG,"state:"+state);
 
-        if (tag==3){
-            if (state==2){
-                aBoolean=true;
-            }
-        }else {
-            return;
+    }
+    private float startX = 0;
+    private float endX;
+    private boolean aBoolean=true;
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        switch (event.getAction()){
+            case MotionEvent.ACTION_DOWN:
+                startX=event.getX();
+                break;
+            case MotionEvent.ACTION_UP:
+                endX=event.getX();
+                if (currentItem==(guideList.size()-1)&&(startX-endX)>0&&aBoolean){
+                    Log.e(TAG,"LSQ");
+                    aBoolean=false;
+                    GoMainActivity();
+                }
+                break;
         }
-
-        if (aBoolean){
-            Log.e(TAG,"LSQ");
-        }
+        return false;
     }
 }

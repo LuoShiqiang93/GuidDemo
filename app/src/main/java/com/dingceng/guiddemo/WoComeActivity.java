@@ -30,7 +30,6 @@ public class WoComeActivity extends AppCompatActivity {
                 handler.sendEmptyMessageDelayed(GO_HOME, 2000);
             } else {
                 handler.sendEmptyMessageDelayed(GO_GUIDE, 2000);
-
             }
         }else {
             handler.sendEmptyMessageDelayed(LOGIN,2000);

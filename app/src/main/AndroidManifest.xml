@@ -19,7 +19,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".GuideActivity" />
+        <activity android:name=".GuideActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"></activity>
         <activity android:name=".LoginActivity" />
         <activity android:name=".RegisterActivity"
             android:theme="@style/Translucent"></activity>
